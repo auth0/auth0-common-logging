@@ -5,7 +5,11 @@ function BunyanWatcher (logger) {
 }
 
 BunyanWatcher.prototype.watch = function (obj) {
-  process_watcher.watch(this.logger, obj);
+  if (obj.constructor.name === 'process') {
+    return process_watcher.watch(this.logger, obj);
+  }
+
+  throw new Error('unknown object type');
 };
 
 module.exports = BunyanWatcher;
