@@ -1,15 +1,5 @@
-var process_watcher = require('./watchers/process');
+var Watcher = require('./watchers');
 
-function BunyanWatcher (logger) {
-  this.logger = logger;
-}
-
-BunyanWatcher.prototype.watch = function (obj) {
-  if (obj.constructor.name === 'process') {
-    return process_watcher.watch(this.logger, obj);
-  }
-
-  throw new Error('unknown object type');
+module.exports = {
+  Watcher: Watcher
 };
-
-module.exports = BunyanWatcher;

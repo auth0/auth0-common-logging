@@ -1,4 +1,4 @@
-var BunyanWatcher = require('./..');
+var BunyanWatcher = require('../watchers');
 var assert = require('chai').assert;
 var _ = require('lodash');
 var fake_process = require('./fixture/fake_process');
