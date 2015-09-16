@@ -23,4 +23,23 @@ module.exports.watch = function (logger, process) {
     }, 'Uncaught Exception');
   });
 
+
+  process.on('message', function (message) {
+    var parsed;
+
+    try{
+      parsed = JSON.parse(message);
+    } catch(err){
+      parsed = {};
+    }
+
+    if (parsed.msg === 'replace_faulty_worker') {
+      logger.error({
+        reason:  parsed.reason,
+        old_pid: parsed.old_pid,
+        new_pid: parsed.new_pid
+      }, 'A new worker was started and the previous one was killed. Reason: ' + parsed.reason);
+    }
+
+  });
 };
