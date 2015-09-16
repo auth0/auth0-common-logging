@@ -1,8 +1,11 @@
 var process_watcher = require('./process');
 var server_watcher = require('./server');
+var process_info = require('../lib/process_info');
 
 function BunyanWatcher (logger) {
-  this.logger = logger;
+  this.logger =  process.env.NODE_ENV === 'production' ?
+                  logger.child({ process: process_info }) :
+                  logger;
 }
 
 BunyanWatcher.prototype.watch = function (obj) {
