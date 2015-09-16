@@ -1,4 +1,4 @@
-var BunyanWatcher = require('../watchers');
+var EventLogger = require('../eventlogger');
 var assert = require('chai').assert;
 // var _ = require('lodash');
 var fake_server = require('./fixture/fake_server');
@@ -14,9 +14,9 @@ describe('watch process', function () {
       }
     };
 
-    var watcher = new BunyanWatcher(logger);
+    var eventLogger = new EventLogger(logger);
     var server = new fake_server();
-    watcher.watch(server);
+    eventLogger.watch(server);
     server.emit('listening');
   });
 

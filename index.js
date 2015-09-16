@@ -1,5 +1,5 @@
-var Watcher = require('./watchers');
+var EventLogger = require('./eventlogger');
 
 module.exports = {
-  Watcher: Watcher
+  EventLogger: EventLogger
 };

@@ -1,4 +1,4 @@
-var BunyanWatcher = require('../watchers');
+var EventLogger = require('../eventlogger');
 var assert = require('chai').assert;
 var _ = require('lodash');
 var fake_process = require('./fixture/fake_process');
@@ -14,8 +14,8 @@ describe('watch process', function () {
       }
     };
 
-    var watcher = new BunyanWatcher(logger);
-    watcher.watch(new fake_process());
+    var eventLogger = new EventLogger(logger);
+    eventLogger.watch(new fake_process());
   });
 
   ['SIGTERM', 'SIGINT'].forEach(function (signal) {
@@ -38,9 +38,9 @@ describe('watch process', function () {
         }
       };
 
-      var watcher = new BunyanWatcher(logger);
+      var eventLogger = new EventLogger(logger);
       var proc = new fake_process();
-      watcher.watch(proc);
+      eventLogger.watch(proc);
       proc.emit(signal, {});
     });
 
@@ -57,9 +57,9 @@ describe('watch process', function () {
       }
     };
 
-    var watcher = new BunyanWatcher(logger);
+    var eventLogger = new EventLogger(logger);
     var proc = new fake_process();
-    watcher.watch(proc);
+    eventLogger.watch(proc);
     proc.emit('uncaughtException', {});
   });
 
