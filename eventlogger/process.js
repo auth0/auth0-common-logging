@@ -17,7 +17,9 @@ module.exports.watch = function (logger, process) {
   process.on('uncaughtException', function (err) {
     logger.error({
       log_type: 'uncaughtException',
-      err:      err
+      err:      err,
+      uptime:   process.uptime(),
+      memoryUsage: process.memoryUsage()
     }, 'Uncaught Exception');
   });
 
