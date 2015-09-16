@@ -4,6 +4,12 @@ var EventEmitter = require('events').EventEmitter;
 //fake process constructor
 function process() {
   EventEmitter.call(this);
+  this.uptime = function () {
+    return 10;
+  };
+  this.memoryUsage = function () {
+    return {};
+  };
 }
 
 util.inherits(process, EventEmitter);

@@ -48,3 +48,11 @@ process.on('SIGTERM', exit(0))
 The http event logger log entries for the following events of a node.js process instance:
 
 -  `listening`
+
+## Common Streams used for logs
+
+```javascript
+var HttpWritableStream = require('auth0-common-logging').Streams.HttpWritableStream;
+var httpWritableStream = new HttpWritableStream('http://url');
+
+```
