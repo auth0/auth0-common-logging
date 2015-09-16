@@ -1,6 +1,6 @@
 {
   "name": "auth0-common-logging",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "Utilities to write logs in auth0 components.",
   "main": "index.js",
   "scripts": {
