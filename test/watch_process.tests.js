@@ -1,4 +1,4 @@
-var EventLogger = require('../eventlogger');
+var EventLogger = require('../').EventLogger;
 var assert = require('chai').assert;
 var _ = require('lodash');
 var fake_process = require('./fixture/fake_process');
