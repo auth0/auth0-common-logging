@@ -1,7 +1,16 @@
+var _ = require('lodash');
+
 module.exports.watch = function (logger, process) {
-  logger.info({
-    log_type: 'starting'
-  }, 'starting');
+  if (!process.env.RELOAD_WORKER) {
+    logger.info({
+      log_type: 'starting'
+    }, 'starting');
+  } else {
+    logger.info(_.extend({
+      log_type: 'starting_worker'
+    }, JSON.parse(process.env.RELOAD_WORKER)), 'starting as a new worker');
+  }
+
 
 
   ['SIGTERM', 'SIGINT'].forEach(function (signal) {
@@ -26,7 +35,7 @@ module.exports.watch = function (logger, process) {
 
   process.on('message', function (message) {
     var parsed;
-
+    console.log('got message', message);
     try{
       parsed = JSON.parse(message);
     } catch(err){
@@ -41,5 +50,8 @@ module.exports.watch = function (logger, process) {
       }, 'A new worker was started and the previous one was killed. Reason: ' + parsed.reason);
     }
 
+    if (parsed.msg === 'start_on_reload') {
+      starting(null, parsed);
+    }
   });
 };
