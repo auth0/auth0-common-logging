@@ -49,9 +49,5 @@ module.exports.watch = function (logger, process) {
         new_pid: parsed.new_pid
       }, 'A new worker was started and the previous one was killed. Reason: ' + parsed.reason);
     }
-
-    if (parsed.msg === 'start_on_reload') {
-      starting(null, parsed);
-    }
   });
 };
