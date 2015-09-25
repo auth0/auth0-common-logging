@@ -35,7 +35,7 @@ module.exports.watch = function (logger, process) {
 
   process.on('message', function (message) {
     var parsed;
-    console.log('got message', message);
+
     try{
       parsed = JSON.parse(message);
     } catch(err){
