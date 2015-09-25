@@ -1,7 +1,7 @@
 module.exports.watch = function  (logger, server) {
   server
   .on('request-internal', function (request, data, tags) {
-    if (tags.received) {
+    if (tags.received && request.path !== '/api/v2/test') {
       return logger.debug({
         log_type: 'request',
         req: request
@@ -37,5 +37,10 @@ module.exports.watch = function  (logger, server) {
       data: event,
       tags: tags
     });
+  }).on('start', function () {
+    logger.info({
+      log_type: 'listening',
+      port: server.info.port
+    },'listening on ' + server.info.port);
   });
 };
