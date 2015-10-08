@@ -7,5 +7,6 @@ module.exports = {
   Streams: {
     HttpWritableStream: HttpWritableStream
   },
-  Serializers: serializers
+  Serializers: serializers,
+  ProcessInfo: require('./lib/process_info')
 };
