@@ -1,4 +1,5 @@
 var _ = require('lodash');
+//_.omit(req.headers, forbidden_headers),
 
 var forbidden_headers = [
   'authorization',
@@ -8,22 +9,40 @@ var forbidden_headers = [
 
 var common_serializers = {
   req: function (req) {
+    var headers = req.headers || {};
     return {
       id:       req._tracking_id,
       method:   req.method,
       host:     req.headers['host'],
       path:     req.path,
-      headers:  _.omit(req.headers, forbidden_headers),
+      headers:   {
+        'content-type':      headers['content-type'],
+        'content-length':    headers['content-length'],
+        'accept':            headers['accept'],
+        'host':              headers['host'],
+        'origin':            headers['origin'],
+        'x-forwarded-for':   headers['x-forwarded-for'],
+        'x-forwarded-proto': headers['x-forwarded-proto'],
+        'x-from-loc':        headers['x-from-loc'],
+        'user-agent':        headers['user-agent'],
+        'referer':           headers['referer'],
+      },
       ip:       req.ip,
-      ua:       req.headers['user-agent'],
-      referer:  req.headers['referer'],
       route:    req.route && req.route.path
     };
   },
   res: function (res) {
+    var headers = res.headers || {};
     var result = {
       statusCode: res.statusCode,
-      headers:    _.omit(res._headers, forbidden_headers),
+      headers:    {
+        'access-control-allow-origin': headers['access-control-allow-origin'],
+        'content-type':          headers['content-type'],
+        'content-length':        headers['content-length'],
+        'x-ratelimit-limit':     headers['x-ratelimit-limit'],
+        'x-ratelimit-remaining': headers['x-ratelimit-remaining'],
+        'x-ratelimit-reset':     headers['x-ratelimit-reset'],
+      },
       time:       res._time
     };
     return result;
