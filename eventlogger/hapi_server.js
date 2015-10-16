@@ -30,7 +30,10 @@ module.exports.watch = function  (logger, server) {
       req: request,
       res: request.response,
       err: error,
-    });
+      payload: request.pre &&
+               request.pre._originalPayload ||
+               request.payload
+    }, error.message);
   }).on('log', function (event, tags) {
     logger.info({
       log_type: 'server_log',
