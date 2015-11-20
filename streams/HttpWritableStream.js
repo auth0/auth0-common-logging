@@ -15,12 +15,13 @@ util.inherits(HttpWritableStream, stream.Writable);
 HttpWritableStream.prototype._write = function (chunk, encoding, done) {
   var entry = chunk.toString();
   var json = JSON.parse(entry);
+  var self = this;
 
   request.post({
     url:  this._url,
     json: json
   }).on('error', function (err) {
-    this.emit('error', err);
+    self.emit('error', err);
   });
 
   return done();
