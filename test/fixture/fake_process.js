@@ -10,6 +10,9 @@ function process() {
   this.memoryUsage = function () {
     return {};
   };
+  this.env = {
+	'RELOAD_WORKER': false
+  };
 }
 
 util.inherits(process, EventEmitter);
