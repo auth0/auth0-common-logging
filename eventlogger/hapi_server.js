@@ -1,7 +1,10 @@
+var requests_start_time = {};
+
 module.exports.watch = function  (logger, server) {
   server
   .on('request-internal', function (request, data, tags) {
     if (tags.received && request.path !== '/api/v2/test') {
+      requests_start_time[request.id] = new Date();
       return logger.debug({
         log_type: 'request',
         req: request
@@ -11,8 +14,10 @@ module.exports.watch = function  (logger, server) {
       const log_event = {
         log_type: 'response',
         req:  request,
-        res:  request.response
+        res:  request.response,
+        took: new Date() - requests_start_time[request.id]
       };
+      delete requests_start_time[request.id];
       if (tags.closed && tags.error) {
         log_event.err = new Error('connection closed');
       }
