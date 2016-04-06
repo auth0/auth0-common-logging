@@ -59,7 +59,8 @@ The http event logger log entries for the following events of a node.js process 
 auth0-common-logging export a `Serializers` object for bunyan. The serializer includes: `req`, `res` and `err` with our defaults.
 
 Serializers can be extended as follows:
-```
+
+```js
 var _ = require('lodash);
 var serializers = require('auth0-common-logging').Serializers;
 
