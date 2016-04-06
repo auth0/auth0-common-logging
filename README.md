@@ -1,3 +1,9 @@
+# DEPRECATED
+
+Please use https://github.com/auth0/auth0-common-logging
+
+----
+
 Common utilities to write formatted logs in auth0 components.
 
 ## Installation
