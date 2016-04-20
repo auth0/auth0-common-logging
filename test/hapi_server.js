@@ -9,7 +9,7 @@ const eventLogger = new EventLogger(bunyan.createLogger({
 
 var hapi_plugin = {
   register: function(server, options, next) {
-    eventLogger.watch(server);
+    eventLogger.watch(server, { ignorePaths: ['/ignored'] });
     next();
   }
 }
@@ -29,6 +29,13 @@ describe('watch Hapi server', function () {
       path: '/',
       handler: function(request, reply) {
         return reply('Hello world!');
+      }
+    });
+    server.route({
+      method: 'GET',
+      path: '/ignored',
+      handler: function(request, reply) {
+        return reply('ignored!');
       }
     });
     server.route({
@@ -66,6 +73,16 @@ describe('watch Hapi server', function () {
     };
     request.get(server.info.uri + '/slow', function (error, response, body) {
       assert.equal(body, 'Hellooooooo sloooooow woooooorld!');
+      done();
+    })
+  });
+
+  it('should not log ignored endpoints', function (done) {
+    eventLogger.logger.info = function(log_event) {
+      throw done(new Error('info should not have been called'));
+    };
+    request.get(server.info.uri + '/ignored', function (error, response, body) {
+      assert.equal(body, 'ignored!');
       done();
     })
   });
