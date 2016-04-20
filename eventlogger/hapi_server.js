@@ -1,16 +1,25 @@
 var requests_start_time = {};
+var assign = require('lodash').assign;
 
-module.exports.watch = function  (logger, server) {
+module.exports.watch = function  (logger, server, options) {
+  options = assign({}, {
+    ignorePaths: []
+  }, options);
+
+  var ignorePaths = options.ignorePaths;
+
   server
   .on('request-internal', function (request, data, tags) {
-    if (tags.received && request.path !== '/api/v2/test') {
+    if (tags.received && request.path !== '/api/v2/test' &&
+      ignorePaths.indexOf(request.path) < 0) {
       requests_start_time[request.id] = new Date();
       return logger.debug({
         log_type: 'request',
         req: request
       });
     }
-    if (tags.response && request.path !== '/api/v2/test') {
+    if (tags.response && request.path !== '/api/v2/test' &&
+      ignorePaths.indexOf(request.path) < 0) {
       const log_event = {
         log_type: 'response',
         req:  request,

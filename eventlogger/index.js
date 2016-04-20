@@ -6,7 +6,7 @@ function EventLogger (logger) {
   this.logger =  logger;
 }
 
-EventLogger.prototype.watch = function (obj) {
+EventLogger.prototype.watch = function (obj, options) {
   if (obj.constructor.name === 'process') {
     return process_watcher.watch(this.logger, obj);
   }
@@ -17,7 +17,7 @@ EventLogger.prototype.watch = function (obj) {
 
   //stupid way of identify a hapi server
   if (obj.app && obj.info && obj.info.id && obj.info.created) {
-    return hapi_server.watch(this.logger, obj);
+    return hapi_server.watch(this.logger, obj, options);
   }
 
   throw new Error('unknown object type');
