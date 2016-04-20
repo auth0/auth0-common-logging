@@ -67,7 +67,7 @@ auth0-common-logging export a `Serializers` object for bunyan. The serializer in
 Serializers can be extended as follows:
 
 ```js
-var _ = require('lodash);
+var _ = require('lodash');
 var serializers = require('auth0-common-logging').Serializers;
 
 var my_serializers = _.extend({}, serializers, {
