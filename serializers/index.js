@@ -66,7 +66,10 @@ var common_serializers = {
       statusCode:  err.statusCode,
       description: err.description,
       oauthError:  err.oauthError,
-      constructor: err.constructor.name
+      constructor: err.constructor.name,
+      port:        err.port,
+      host:        err.host,
+      path:        err.path,
     };
   }
 };
