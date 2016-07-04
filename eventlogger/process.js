@@ -14,7 +14,7 @@ module.exports.watch = function (logger, process) {
 
 
   ['SIGTERM', 'SIGINT'].forEach(function (signal) {
-    process.on(signal, function () {
+    process.once(signal, function () {
       logger.info({
         log_type: 'stopping',
         signal: signal
