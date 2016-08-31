@@ -22,15 +22,16 @@ module.exports.watch = function (logger, process) {
     });
   });
 
-
-  process.on('uncaughtException', function (err) {
-    logger.error({
-      log_type: 'uncaughtException',
-      err:      err,
-      uptime:   process.uptime(),
-      memoryUsage: process.memoryUsage()
-    }, 'Uncaught Exception');
-  });
+  if (process.env.NODE_ENV !== 'test') {
+    process.on('uncaughtException', function (err) {
+      logger.error({
+        log_type: 'uncaughtException',
+        err:      err,
+        uptime:   process.uptime(),
+        memoryUsage: process.memoryUsage()
+      }, 'Uncaught Exception');
+    });
+  }
 
 
   process.on('message', function (message) {
