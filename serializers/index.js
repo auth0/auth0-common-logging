@@ -23,6 +23,7 @@ var common_serializers = {
         'origin':            headers['origin'],
         'x-forwarded-for':   headers['x-forwarded-for'],
         'x-forwarded-proto': headers['x-forwarded-proto'],
+        'x-forwarded-req-id': headers['x-forwarded-req-id'],
         'x-from-loc':        headers['x-from-loc'],
         'user-agent':        headers['user-agent'],
         'referer':           headers['referer'],
