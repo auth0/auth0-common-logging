@@ -69,7 +69,7 @@ var common_serializers = {
       oauthError:  err.oauthError,
       constructor: err.constructor.name,
       port:        err.port,
-      host:        err.host,
+      host:        err.host || _.get(err, 'domainEmitter.socket._host'),
       path:        err.path,
     };
   }
