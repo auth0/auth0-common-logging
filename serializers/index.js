@@ -21,6 +21,7 @@ var common_serializers = {
         'accept':            headers['accept'],
         'host':              headers['host'],
         'origin':            headers['origin'],
+        'x-forwarded-host':  headers['x-forwarded-host'],
         'x-forwarded-for':   headers['x-forwarded-for'],
         'x-forwarded-proto': headers['x-forwarded-proto'],
         'x-forwarded-req-id': headers['x-forwarded-req-id'],

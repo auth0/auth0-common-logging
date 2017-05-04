@@ -6,7 +6,8 @@ describe('serializers', function () {
   it('should work', function () {
     var serialized = serializers.req({
       headers: {
-        host: 'host.host.com'
+        host: 'host.host.com',
+        'x-forwarded-host': 'my.forwarded.host.com'
       },
       method: 'post',
       path: '/foo/bar'
@@ -14,6 +15,7 @@ describe('serializers', function () {
 
     assert.equal(serialized.method, 'post');
     assert.equal(serialized.host, 'host.host.com');
+    assert.equal(serialized.headers['x-forwarded-host'], 'my.forwarded.host.com');
     assert.equal(serialized.path, '/foo/bar');
 
   });
