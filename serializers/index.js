@@ -25,6 +25,7 @@ var common_serializers = {
         'x-forwarded-for':   headers['x-forwarded-for'],
         'x-forwarded-proto': headers['x-forwarded-proto'],
         'x-forwarded-req-id': headers['x-forwarded-req-id'],
+        'auth0-forwarded-for': headers['auth0-forwarded-for'],
         'x-from-loc':        headers['x-from-loc'],
         'user-agent':        headers['user-agent'],
         'referer':           headers['referer'],
