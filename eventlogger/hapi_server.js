@@ -8,32 +8,39 @@ module.exports.watch = function  (logger, server, options) {
 
   var ignorePaths = options.ignorePaths;
 
+  function createLogEntry(request, log_type) {
+    const took = Date.now() - requests_start_time[request.id];
+    delete requests_start_time[request.id];
+
+    return {
+      log_type,
+      took,
+      req: request,
+      res: request.response
+    };
+  }
+
   server
   .on('request-internal', function (request, data, tags) {
     if (tags.received && request.path !== '/api/v2/test' &&
       ignorePaths.indexOf(request.path) < 0) {
-      requests_start_time[request.id] = new Date();
+      requests_start_time[request.id] = Date.now();
       return logger.debug({
         log_type: 'request',
         req: request
       });
     }
-    if (tags.response && request.path !== '/api/v2/test' &&
-      ignorePaths.indexOf(request.path) < 0) {
-      const log_event = {
-        log_type: 'response',
-        req:  request,
-        res:  request.response,
-        took: new Date() - requests_start_time[request.id]
-      };
-      delete requests_start_time[request.id];
-      if (tags.closed && tags.error) {
-        log_event.err = new Error('connection closed');
-      }
-      if (tags.aborted && tags.error) {
-        log_event.err = new Error('connection aborted');
-      }
-      return logger.info(log_event);
+
+    if (tags.request && tags.closed) {
+      const abortLogEntry = createLogEntry(request, 'request_aborted');
+      return logger.info(abortLogEntry, 'request aborted');
+    }
+
+    if (tags.response &&
+        request.path !== '/api/v2/test' &&
+        ignorePaths.indexOf(request.path) < 0) {
+      const rsponseLogEntry = createLogEntry(request, 'response');
+      return logger.info(rsponseLogEntry, 'response');
     }
   }).on('request', function (request, data, tags) {
     const level = tags.debug ? 'debug': 'info';
