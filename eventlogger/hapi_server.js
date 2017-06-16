@@ -25,7 +25,7 @@ module.exports.watch = function  (logger, server, options) {
     if (tags.received && request.path !== '/api/v2/test' &&
       ignorePaths.indexOf(request.path) < 0) {
       requests_start_time[request.id] = Date.now();
-      return logger.debug({
+      return logger.info({
         log_type: 'request',
         req: request
       });
