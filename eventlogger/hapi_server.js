@@ -31,7 +31,8 @@ module.exports.watch = function  (logger, server, options) {
       });
     }
 
-    if (tags.request && tags.closed) {
+    if (tags.request && tags.closed ||
+        tags.response && tags.aborted) {
       const abortLogEntry = createLogEntry(request, 'request_aborted');
       return logger.info(abortLogEntry, 'request aborted');
     }
