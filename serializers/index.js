@@ -22,6 +22,7 @@ var common_serializers = {
         'auth0-forwarded-for': headers['auth0-forwarded-for'],
         'host':                headers['host'],
         'origin':              headers['origin'],
+        'x-auth0-id':          headers['x-auth0-id'],
         'x-amzn-trace-id':     headers['x-amzn-trace-id'],
         'x-forwarded-host':    headers['x-forwarded-host'],
         'x-forwarded-for':     headers['x-forwarded-for'],
