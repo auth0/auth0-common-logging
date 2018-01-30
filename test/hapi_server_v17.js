@@ -1,5 +1,5 @@
 const EventLogger = require('../').EventLogger;
-const Hapi = require('hapi11');
+const Hapi = require('hapi17');
 const bunyan = require('bunyan');
 const assert = require('chai').assert;
 const request = require('request');
@@ -8,57 +8,48 @@ const eventLogger = new EventLogger(bunyan.createLogger({
 }));
 
 var hapi_plugin = {
-  register: function(server, options, next) {
-    eventLogger.watch(server, { ignorePaths: ['/ignored'] });
-    next();
-  }
-};
-
-hapi_plugin.register.attributes = {
+  register: function(server, options) {
+    return eventLogger.watch(server, { ignorePaths: ['/ignored'] });
+  },
   name: 'bunyan-logger',
-  version: '1.0.0'
+  version: '1.0.0',
 };
 
-describe('watch Hapi server < v17', function () {
+describe('watch Hapi server v17', function () {
   var server;
 
-  before(function() {
-    server = new Hapi.Server();
-    server.connection({ port: 9876 });
+  before(async function() {
+    server = Hapi.server({ host: 'localhost', port: 9877 });
     server.route({
       method: 'GET',
       path: '/',
-      handler: function(request, reply) {
-        return reply('Hello world!');
+      handler: function() {
+        return 'Hello world!';
       }
     });
     server.route({
       method: 'GET',
       path: '/ignored',
-      handler: function(request, reply) {
-        return reply('ignored!');
+      handler: function() {
+        return 'ignored!';
       }
     });
     server.route({
       method: 'GET',
       path: '/slow',
-      handler: function(request, reply) {
-        setTimeout(function() {
-          return reply('Hellooooooo sloooooow woooooorld!');
-        }, 1500);
+      handler: function() {
+        return new Promise((resolve) => {
+          setTimeout(resolve, 1500, 'Hellooooooo sloooooow woooooorld!');
+        });
       }
     });
-    server.start(function() {});
-    server.register(hapi_plugin, function(err) {
-      if (err) {
-        console.log('Failed to load Hapi plugin');
-      }
-    });
+    await server.register(hapi_plugin);
+    return server.start();
   });
 
-  after(function (done) {
-    server.stop(done);
-  });
+  after(function() {
+    return server.stop();
+  })
 
   it('should log response time', function (done) {
     eventLogger.logger.info = function(log_event) {
@@ -69,7 +60,6 @@ describe('watch Hapi server < v17', function () {
       assert.isNumber(log_event.took);
       assert.isAbove(log_event.took, 0);
     };
-
     request.get(server.info.uri + '/', function (error, response, body) {
       assert.equal(body, 'Hello world!');
       done();
@@ -81,10 +71,11 @@ describe('watch Hapi server < v17', function () {
       if (log_event.log_type === 'request') {
         return;
       }
+
       assert.isNumber(log_event.took);
       assert.isAbove(log_event.took, 0);
       assert.equal(log_event.log_type, 'request_aborted');
-      assert.isString(log_event.req.id);
+      assert.isString(log_event.req.info.id);
       assert.equal(msg, 'request aborted');
       done();
     };
@@ -107,13 +98,13 @@ describe('watch Hapi server < v17', function () {
     };
     request.get(server.info.uri + '/slow', function (error, response, body) {
       assert.equal(body, 'Hellooooooo sloooooow woooooorld!');
-      done();
+      done(error);
     });
   });
 
   it('should not log ignored endpoints', function (done) {
-    eventLogger.logger.info = function(log_event) {
-      throw done(new Error('info should not have been called'));
+    eventLogger.logger.info = function() {
+      done(new Error('info should not have been called'));
     };
     request.get(server.info.uri + '/ignored', function (error, response, body) {
       assert.equal(body, 'ignored!');

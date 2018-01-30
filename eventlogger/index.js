@@ -1,6 +1,7 @@
 var process_watcher = require('./process');
 var server_watcher  = require('./server');
 var hapi_server     = require('./hapi_server');
+var hapi_server_v17 = require('./hapi_server_v17');
 
 function EventLogger (logger) {
   this.logger =  logger;
@@ -17,7 +18,13 @@ EventLogger.prototype.watch = function (obj, options) {
 
   //stupid way of identify a hapi server
   if (obj.app && obj.info && obj.info.id && obj.info.created) {
-    return hapi_server.watch(this.logger, obj, options);
+    const hapiVersion = obj.version || ""; // '17.0.0'
+    const majorHapiVersion = parseInt(hapiVersion.split(/\./)[0]);
+
+    // depends on the hapi version use a different watch version
+    const watch = majorHapiVersion >= 17 ? hapi_server_v17.watch : hapi_server.watch;
+
+    return watch(this.logger, obj, options);
   }
 
   throw new Error('unknown object type');
