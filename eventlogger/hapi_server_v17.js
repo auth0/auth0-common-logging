@@ -5,7 +5,7 @@ module.exports.watch = function (logger, server, options) {
     ignorePaths: []
   }, options);
 
-  var ignorePaths = options.ignorePaths;
+  const ignorePaths = options.ignorePaths;
 
   function createLogEntry(request, log_type) {
     const took = Date.now() - request.info.received;
