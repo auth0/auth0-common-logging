@@ -19,9 +19,9 @@ EventLogger.prototype.watch = function (obj, options) {
   //stupid way of identify a hapi server
   if (obj.app && obj.info && obj.info.id && obj.info.created) {
     const hapiVersion = obj.version || ""; // '17.0.0'
-    const majorHapiVersion = parseInt(hapiVersion.split(/\./)[0]);
+    const majorHapiVersion = parseInt(hapiVersion.split(".")[0]);
 
-    // depends on the hapi version use a different watch version
+    // depending on the hapi version use a different watch version
     const watch = majorHapiVersion >= 17 ? hapi_server_v17.watch : hapi_server.watch;
 
     return watch(this.logger, obj, options);

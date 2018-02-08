@@ -27,14 +27,14 @@ module.exports.watch = function (logger, server, options) {
   }
 
   function onRequestError(request, error) {
+    const payload = request.pre && request.pre._originalPayload || request.payload;
+
     logger.error({
       log_type: 'request_error',
       req: request,
       res: request.response,
       err: error,
-      payload: request.pre &&
-      request.pre._originalPayload ||
-      request.payload
+      payload,
     }, error.message);
   }
 
