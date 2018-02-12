@@ -18,7 +18,7 @@ module.exports.watch = function (logger, server, options) {
     };
   }
 
-  async function onRequest(request, h) {
+  function onRequest(request, h) {
     if (ignorePaths.indexOf(request.path) >= 0) {
       return h.continue;
     }
