@@ -1,5 +1,5 @@
 const EventLogger = require('../').EventLogger;
-const Hapi = require('hapi');
+const Hapi = require('hapi11');
 const bunyan = require('bunyan');
 const assert = require('chai').assert;
 const request = require('request');
@@ -19,7 +19,7 @@ hapi_plugin.register.attributes = {
   version: '1.0.0'
 };
 
-describe('watch Hapi server', function () {
+describe('watch Hapi server < v17', function () {
   var server;
 
   before(function() {
@@ -56,11 +56,20 @@ describe('watch Hapi server', function () {
     });
   });
 
+  after(function (done) {
+    server.stop(done);
+  });
+
   it('should log response time', function (done) {
     eventLogger.logger.info = function(log_event) {
+      if (log_event.log_type === 'request') {
+        return;
+      }
+
       assert.isNumber(log_event.took);
       assert.isAbove(log_event.took, 0);
     };
+
     request.get(server.info.uri + '/', function (error, response, body) {
       assert.equal(body, 'Hello world!');
       done();
@@ -69,6 +78,9 @@ describe('watch Hapi server', function () {
 
   it('should log request on aborted request', function (done) {
     eventLogger.logger.info = function(log_event, msg) {
+      if (log_event.log_type === 'request') {
+        return;
+      }
       assert.isNumber(log_event.took);
       assert.isAbove(log_event.took, 0);
       assert.equal(log_event.log_type, 'request_aborted');
@@ -86,6 +98,10 @@ describe('watch Hapi server', function () {
 
   it('should log response time in a slow endpoint', function (done) {
     eventLogger.logger.info = function(log_event) {
+      if (log_event.log_type === 'request') {
+        return;
+      }
+
       assert.isNumber(log_event.took);
       assert.isAbove(log_event.took, 1500);
     };
