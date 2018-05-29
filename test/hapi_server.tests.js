@@ -22,9 +22,9 @@ hapi_plugin.register.attributes = {
 describe('watch Hapi server < v17', function () {
   var server;
 
-  before(function() {
+  before(function(done) {
     server = new Hapi.Server();
-    server.connection({ port: 9876 });
+    server.connection({ host:'localhost', port: 9876 });
     server.route({
       method: 'GET',
       path: '/',
@@ -48,7 +48,7 @@ describe('watch Hapi server < v17', function () {
         }, 1500);
       }
     });
-    server.start(function() {});
+    server.start(done);
     server.register(hapi_plugin, function(err) {
       if (err) {
         console.log('Failed to load Hapi plugin');
