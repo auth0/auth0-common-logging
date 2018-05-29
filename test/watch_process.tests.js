@@ -10,12 +10,29 @@ describe('watch process', function () {
       info: function (meta, msg) {
         assert.include(msg, 'starting');
         assert.equal(meta.log_type, 'starting');
+        assert.isNumber(meta.uptime, 'uptime');
         done();
       }
     };
 
     var eventLogger = new EventLogger(logger);
     eventLogger.watch(new fake_process());
+  });
+
+  it('should log on starting worker', function (done) {
+    var logger = {
+      info: function (meta, msg) {
+        assert.include(msg, 'starting as a new worker');
+        assert.equal(meta.log_type, 'starting_worker');
+        assert.isNumber(meta.uptime, 'uptime');
+        done();
+      }
+    };
+
+    var eventLogger = new EventLogger(logger);
+    var fakeProcess = new fake_process();
+    fakeProcess.env.RELOAD_WORKER = true;
+    eventLogger.watch(fakeProcess);
   });
 
   ['SIGTERM', 'SIGINT'].forEach(function (signal) {
