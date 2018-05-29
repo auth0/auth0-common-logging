@@ -3,11 +3,13 @@ var _ = require('lodash');
 module.exports.watch = function (logger, process) {
   if (!process.env.RELOAD_WORKER) {
     logger.info({
-      log_type: 'starting'
+      log_type: 'starting',
+      uptime: process.uptime()
     }, 'starting');
   } else {
     logger.info(_.extend({
-      log_type: 'starting_worker'
+      log_type: 'starting_worker',
+      uptime: process.uptime()
     }, JSON.parse(process.env.RELOAD_WORKER)), 'starting as a new worker');
   }
 
