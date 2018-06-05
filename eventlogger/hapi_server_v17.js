@@ -26,16 +26,25 @@ module.exports.watch = function (logger, server, options) {
     return h.continue;
   }
 
-  function onRequestError(request, error) {
+  function onRequestError(request, event, tags) {
     const payload = request.pre && request.pre._originalPayload || request.payload;
 
-    logger.error({
-      log_type: 'request_error',
-      req: request,
-      res: request.response,
-      err: error,
-      payload,
-    }, error.message);
+    if (tags.error) {
+      logger.error({
+        log_type: 'request_error',
+        req: request,
+        res: request.response,
+        err: event.error,
+        payload,
+      }, event.error.message);
+    } else {
+      logger.warning({
+        log_type: 'request_error',
+        event: event,
+        req: request,
+        tags: tags
+      }, 'Unexpected event type in onRequestError handler');
+    }
   }
 
   function onRequestClosedOrAborted(request, data, tags) {
