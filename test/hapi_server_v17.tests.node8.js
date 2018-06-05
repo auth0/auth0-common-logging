@@ -15,10 +15,17 @@ var hapi_plugin = {
   version: '1.0.0',
 };
 
+var null_logger = function() { return; };
+
 describe('watch Hapi server v17', function () {
   var server;
+  var loggerSave = {};
 
   before(async function() {
+    eventLogger.logger.info = null_logger;
+    loggerSave.info = eventLogger.logger.info;
+    loggerSave.error = eventLogger.logger.error;
+
     server = Hapi.server({ host: 'localhost', port: 9877 });
     server.route({
       method: 'GET',
@@ -43,6 +50,13 @@ describe('watch Hapi server v17', function () {
         });
       }
     });
+    server.route({
+      method: 'GET',
+      path: '/internal_error',
+      handler: async function() {
+        throw new Error('test error');
+      }
+    });
     await server.register(hapi_plugin);
     return server.start();
   });
@@ -50,6 +64,13 @@ describe('watch Hapi server v17', function () {
   after(function() {
     return server.stop();
   })
+
+  afterEach(function() {
+    // Restored saved logger functions to avoid test cross-contamination
+    eventLogger.logger.info = loggerSave.info;
+    eventLogger.logger.error = loggerSave.error;
+  })
+  
 
   it('should log response time', function (done) {
     eventLogger.logger.info = function(log_event) {
@@ -100,6 +121,24 @@ describe('watch Hapi server v17', function () {
       assert.equal(body, 'Hellooooooo sloooooow woooooorld!');
       done(error);
     });
+  });
+
+  it('should log error appropriately', function(done) {
+    let event = null;
+    let message = null;
+
+    eventLogger.logger.error = function(log_event, msg) {
+      event = log_event;
+      message = msg;
+    };
+
+    request.get(server.info.uri + '/internal_error', function (error, response, body) {
+      assert.isNotNull(event);
+      assert.equal(event.log_type, 'request_error');
+      assert.typeOf(event.err, 'Error');
+      assert.equal(message, 'test error');
+      done();
+    })
   });
 
   it('should not log ignored endpoints', function (done) {
