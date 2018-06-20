@@ -31,6 +31,7 @@ var common_serializers = {
         'x-from-loc':          headers['x-from-loc'],
         'user-agent':          headers['user-agent'],
         'referer':             headers['referer'],
+        'auth0-client':        headers['auth0-client']
       },
       ip:       req.ip,
       route:    req.route && req.route.path
