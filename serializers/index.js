@@ -7,6 +7,27 @@ var forbidden_headers = [
   'set-cookie'
 ];
 
+function parseClient (header) {
+  try {
+      const decode = Buffer.from(header, 'base64').toString();
+      let client = JSON.parse(decode);
+      if ('name' in client && 'version' in client) {
+          let obj = { 
+              'name': client.name, 
+              'version': client.version 
+          }
+          delete client.name;
+          delete client.version;
+          if (Object.keys(client)) {
+              obj['extra'] = Buffer.from(JSON.stringify(client)).toString('base64');
+          }
+          return obj;
+      }
+  } catch (e) {
+      return '';
+  }
+}
+
 var common_serializers = {
   req: function (req) {
     var headers = req.headers || {};
@@ -31,7 +52,7 @@ var common_serializers = {
         'x-from-loc':          headers['x-from-loc'],
         'user-agent':          headers['user-agent'],
         'referer':             headers['referer'],
-        'auth0-client':        headers['auth0-client']
+        'auth0-client':        parseClient(headers['auth0-client'])
       },
       ip:       req.ip,
       route:    req.route && req.route.path
