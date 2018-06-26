@@ -12,16 +12,16 @@ function parseClient (header) {
       const decode = Buffer.from(header, 'base64').toString();
       let client = JSON.parse(decode);
       if ('name' in client && 'version' in client) {
-          let obj = { 
+          let newHeader = { 
               'name': client.name, 
               'version': client.version 
-          }
+          };
           delete client.name;
           delete client.version;
           if (Object.keys(client)) {
-              obj['extra'] = Buffer.from(JSON.stringify(client)).toString('base64');
+            newHeader['extra'] = Buffer.from(JSON.stringify(client)).toString('base64');
           }
-          return obj;
+          return newHeader;
       }
   } catch (e) {
       return '';
