@@ -1,5 +1,5 @@
 var requests_start_time = {};
-var assign = require('lodash').assign;
+var assign = require('lodash.assign');
 
 module.exports.watch = function  (logger, server, options) {
   options = assign({}, {

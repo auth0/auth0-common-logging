@@ -1,6 +1,5 @@
 var EventLogger = require('../').EventLogger;
 var assert = require('chai').assert;
-// var _ = require('lodash');
 var fake_server = require('./fixture/fake_server');
 
 describe('watch process', function () {

@@ -16,7 +16,9 @@
     "mocha": "~2.3.2"
   },
   "dependencies": {
-    "lodash": "~3.10.1",
+    "lodash.assignin": "~4.2.0",
+    "lodash.assign": "~4.2.0",
+    "lodash.noop": "~3.0.1",
     "request": "^2.27.0"
   }
 }

@@ -1,6 +1,6 @@
 var EventLogger = require('../').EventLogger;
 var assert = require('chai').assert;
-var _ = require('lodash');
+var noop = require('lodash.noop');
 var fake_process = require('./fixture/fake_process');
 
 describe('watch process', function () {
@@ -66,7 +66,7 @@ describe('watch process', function () {
 
   it('should log on uncaughtException', function (done) {
     var logger = {
-      info: _.noop,
+      info: noop,
       error: function (meta, msg) {
         assert.include(msg, 'Uncaught Exception');
         assert.equal(meta.log_type, 'uncaughtException');

@@ -1,6 +1,3 @@
-var _ = require('lodash');
-//_.omit(req.headers, forbidden_headers),
-
 var forbidden_headers = [
   'authorization',
   'cookie',

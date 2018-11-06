@@ -1,7 +1,7 @@
 var stream  = require('stream');
 var util    = require('util');
 var request = require('request');
-var _       = require('lodash');
+var noop    = require('lodash.noop');
 
 function HttpWritableStream (url) {
   if (!url) {
@@ -21,7 +21,7 @@ HttpWritableStream.prototype._write = function (chunk, encoding, done) {
   request.post({
     url:  this._url,
     json: json
-  }, _.noop).on('error', function (err) {
+  }, noop).on('error', function (err) {
     self.emit('error', err);
   });
 

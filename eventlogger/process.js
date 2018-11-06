@@ -1,4 +1,4 @@
-var _ = require('lodash');
+var assignIn = require('lodash.assignin');
 
 module.exports.watch = function (logger, process) {
   if (!process.env.RELOAD_WORKER) {
@@ -7,7 +7,7 @@ module.exports.watch = function (logger, process) {
       uptime: process.uptime()
     }, 'starting');
   } else {
-    logger.info(_.extend({
+    logger.info(assignIn({
       log_type: 'starting_worker',
       uptime: process.uptime()
     }, JSON.parse(process.env.RELOAD_WORKER)), 'starting as a new worker');
