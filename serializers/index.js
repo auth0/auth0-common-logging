@@ -37,6 +37,8 @@ var common_serializers = {
     };
   },
   res: function (res) {
+    if (!res || !res.statusCode) { return; }
+
     var headers = res.headers || {};
     var result = {
       statusCode: res.statusCode,
