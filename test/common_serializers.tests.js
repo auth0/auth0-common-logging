@@ -20,6 +20,13 @@ describe('serializers', function () {
 
   });
 
+  it('should return an empty object if response is not defined', function () {
+    var serialized = serializers.res();
+
+    assert.deepEqual(serialized, {});
+
+  });
+
   it('can be extended', function () {
     var my_serializers = _.extend({}, serializers, {
       req: function (req) {
