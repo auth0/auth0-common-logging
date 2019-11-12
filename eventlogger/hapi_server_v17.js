@@ -1,11 +1,16 @@
 var assign = require('lodash').assign;
+var obfuscator = require('../lib/obfuscator');
 
 module.exports.watch = function (logger, server, options) {
   options = assign({}, {
-    ignorePaths: []
+    ignorePaths: [],
+    obfuscatePayload: false,
+    stringifyPayload: false
   }, options);
 
   const ignorePaths = options.ignorePaths;
+  const obfuscatePayload = options.obfuscatePayload;
+  const stringifyPayload = options.stringifyPayload;
 
   function createLogEntry(request, log_type) {
     const took = Date.now() - request.info.received;
@@ -27,7 +32,13 @@ module.exports.watch = function (logger, server, options) {
   }
 
   function onRequestError(request, event, tags) {
-    const payload = request.pre && request.pre._originalPayload || request.payload;
+    let payload = request.pre && request.pre._originalPayload || request.payload;
+    if (obfuscatePayload) {
+      payload = obfuscator.obfuscateSafe(payload);
+    }
+    if (stringifyPayload) {
+      payload = JSON.stringify(payload);
+    }
 
     if (tags.error) {
       logger.error({
