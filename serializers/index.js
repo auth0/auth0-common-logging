@@ -38,7 +38,7 @@ var common_serializers = {
   },
   res: function (res) {
     if (!res) return {};
-    var headers = res.headers || {};
+    var headers = (typeof res.getHeaders === 'function') ? res.getHeaders() : headers || {};
     var result = {
       statusCode: res.statusCode,
       headers:    {
