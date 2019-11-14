@@ -6,17 +6,17 @@ describe('obfuscator', () => {
   describe('obfuscate()', () => {
     it('should obfuscate strings with "string"', () => {
       const actual = obfuscator.obfuscate({ a: 'some_string' });
-      expect(actual).to.eql({ a: 'string' });
+      expect(actual).to.eql({ a: '<redacted_string>' });
     });
 
     it('should obfuscate numbers with "number"', () => {
       const actual = obfuscator.obfuscate({ a: 10 });
-      expect(actual).to.eql({ a: 'number' });
+      expect(actual).to.eql({ a: '<redacted_number>' });
     });
 
     it('should obfuscate booleans with "boolean"', () => {
       const actual = obfuscator.obfuscate({ a: false });
-      expect(actual).to.eql({ a: 'boolean' });
+      expect(actual).to.eql({ a: '<redacted_boolean>' });
     });
 
     it('should keep null untouched', () => {
@@ -26,17 +26,17 @@ describe('obfuscator', () => {
 
     it('should report undefined as a string', () => {
       const actual = obfuscator.obfuscate({ a: undefined });
-      expect(actual).to.eql({ a: 'undefined' });
+      expect(actual).to.eql({ a: '<undefined>' });
     });
 
     it('should walk down child object', () => {
       const actual = obfuscator.obfuscate({ a: { b: 'some_string' } });
-      expect(actual).to.eql({ a: { b: 'string' } });
+      expect(actual).to.eql({ a: { b: '<redacted_string>' } });
     });
 
     it('should walk down child array', () => {
       const actual = obfuscator.obfuscate({ a: ['some_string'] });
-      expect(actual).to.eql({ a: ['string'] });
+      expect(actual).to.eql({ a: ['<redacted_string>'] });
     });
 
     it('should not mutate input object', () => {
@@ -52,11 +52,18 @@ describe('obfuscator', () => {
 
     it('should support string payload', () => {
       const actual = obfuscator.obfuscate('some_string');
-      expect(actual).to.eql('string');
+      expect(actual).to.eql('<redacted_string>');
     });
 
-    it('should throw on big objects', () => {
+    it('should throw on big objects (wide)', () => {
       const input = { a: _.times(1000, () => 'some_string') };
+      expect(() => obfuscator.obfuscate(input)).to.throw('object is too large to obfuscate');
+    });
+
+    it('should throw on big objects (deep)', () => {
+      const input = _.times(1000).reduce((acc) => {
+        return { x: acc };
+      }, {});
       expect(() => obfuscator.obfuscate(input)).to.throw('object is too large to obfuscate');
     });
   });
