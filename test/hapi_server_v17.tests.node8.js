@@ -227,7 +227,7 @@ describe('watch Hapi server v17', function () {
       whenARequestRaisesAnError(function () {
         assert.isNotNull(event);
         assert.equal(event.log_type, 'request_error');
-        assert.deepEqual(event.payload, { a: 'string' });
+        assert.deepEqual(event.payload, { a: '<redacted_string>' });
         done();
       });
     });
@@ -283,7 +283,7 @@ describe('watch Hapi server v17', function () {
       whenARequestRaisesAnError(function () {
         assert.isNotNull(event);
         assert.equal(event.log_type, 'request_error');
-        assert.equal(event.payload, '{"a":"string"}');
+        assert.equal(event.payload, '{"a":"<redacted_string>"}');
         done();
       });
     });
