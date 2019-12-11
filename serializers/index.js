@@ -13,7 +13,7 @@ var common_serializers = {
     return {
       id:       req._tracking_id,
       method:   req.method,
-      host:     req.headers['host'],
+      host:     headers['host'],
       path:     req.path,
       headers:   {
         'content-type':        headers['content-type'],
