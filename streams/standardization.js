@@ -7,11 +7,13 @@ class SchemaDebugStream extends Writable {
     constructor(options) {
         options = options || {};
         super(options);
-        this.out = options.out || process.stderrr;
+        this.out = options.out || process.stderr;
         delete options.out;
 
         this.delimiter = options.delimiter || null;
         delete options.delimiter;
+
+        this.exitOnError = options.exitOnError || false;
 
         this.v = new Validator();
     }
@@ -33,6 +35,10 @@ class SchemaDebugStream extends Writable {
                 this.out.write(errors + this.delimiter);
             }
             this.out.write(errors);
+
+            if (this.exitOnError) {
+                process.exit(1);
+            }
         }
 
         return callback();

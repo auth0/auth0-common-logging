@@ -78,5 +78,12 @@ describe('schemas', () => {
             const stream = new standardized.SchemaDebugStream();
             expect(() => {stream.write('asdf!}|;j')}).to.not.throw();
         });
+
+        it('schemas: should write invalid without error', () => {
+            const stream = new standardized.SchemaDebugStream();
+            expect(() => {
+                stream.write(JSON.stringify({}));
+            }).to.not.throw();
+        });
     });
 });
