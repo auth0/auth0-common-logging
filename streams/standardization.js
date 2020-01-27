@@ -2,25 +2,17 @@ const Writable = require('stream').Writable;
 const Validator = require('jsonschema').Validator;
 const LOG_SCHEMAS = require('logs-schemas');
 
-/*
-function SchemaDebugStream() {
-    stream.Writable.call(this);
-}
-
-util.inherits(SchemaDebugStream, stream.Writable);
-
-SchemaDebugStream
-*/
-
 
 class SchemaDebugStream extends Writable {
     constructor(options) {
+        options = options || {};
         super(options);
-        this.out = process.stderrr;
-        if (typeof options.out !== 'undefined') {
-            this.out = options.out;
-            delete options.out;
-        }
+        this.out = options.out || process.stderrr;
+        delete options.out;
+
+        this.delimiter = options.delimiter || null;
+        delete options.delimiter;
+
         this.v = new Validator();
     }
 
@@ -35,7 +27,12 @@ class SchemaDebugStream extends Writable {
 
         const result = this.v.validate(json, LOG_SCHEMAS.webservice);
         if (!result.valid) {
-            this.out.write(JSON.stringify(result.errors));
+            // console.log(JSON.stringify(result.errors[0]));
+            const errors = JSON.stringify(result.errors);
+            if (this.delimiter !== null) {
+                this.out.write(errors + this.delimiter);
+            }
+            this.out.write(errors);
         }
 
         return callback();
