@@ -18,7 +18,7 @@
   "dependencies": {
     "jsonschema": "^1.2.5",
     "lodash": "^4.17.11",
-    "logs-schemas": "github:auth0/logs-schemas#3d990f4f1501c19d64a2a78b4c02fade6bf28066",
+    "logs-schemas": "github:auth0/logs-schemas#v0.1.0",
     "request": "^2.27.0",
     "traverse": "^0.6.6"
   }
