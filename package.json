@@ -1,6 +1,6 @@
 {
   "name": "auth0-common-logging",
-  "version": "2.26.1",
+  "version": "2.26.2",
   "description": "Utilities to write logs in auth0 components.",
   "main": "index.js",
   "scripts": {
@@ -18,7 +18,7 @@
   "dependencies": {
     "jsonschema": "^1.2.5",
     "lodash": "^4.17.11",
-    "logs-schemas": "github:auth0/logs-schemas#v0.1.0",
+    "logs-schemas": "auth0/logs-schemas#v0.1.0",
     "request": "^2.27.0",
     "traverse": "^0.6.6"
   }
