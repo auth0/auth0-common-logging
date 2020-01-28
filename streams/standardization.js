@@ -7,15 +7,12 @@ class SchemaDebugStream extends Writable {
     constructor(options) {
         options = options || {};
         super(options);
+
         this.out = options.out || process.stderr;
-        delete options.out;
-
         this.delimiter = options.delimiter || null;
-        delete options.delimiter;
-
         this.exitOnError = options.exitOnError || false;
-
         this.v = new Validator();
+        this.schema = options.schema || LOG_SCHEMAS.webservice;
     }
 
     _write(chunk, encoding, callback) {
@@ -27,9 +24,8 @@ class SchemaDebugStream extends Writable {
             return callback();
         }
 
-        const result = this.v.validate(json, LOG_SCHEMAS.webservice);
+        const result = this.v.validate(json, this.schema);
         if (!result.valid) {
-            // console.log(JSON.stringify(result.errors[0]));
             const errors = JSON.stringify(result.errors);
             if (this.delimiter !== null) {
                 this.out.write(errors + this.delimiter);
