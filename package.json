@@ -16,9 +16,9 @@
     "mocha": "~2.3.2"
   },
   "dependencies": {
+    "@a0/logs-schemas": "^0.2.0",
     "jsonschema": "^1.2.5",
     "lodash": "^4.17.11",
-    "logs-schemas": "auth0/logs-schemas#v0.1.0",
     "request": "^2.27.0",
     "traverse": "^0.6.6"
   }

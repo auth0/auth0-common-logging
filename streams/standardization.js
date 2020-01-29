@@ -1,6 +1,6 @@
 const Writable = require('stream').Writable;
 const Validator = require('jsonschema').Validator;
-const LOG_SCHEMAS = require('logs-schemas');
+const LOG_SCHEMAS = require('@a0/logs-schemas');
 
 
 class SchemaDebugStream extends Writable {
