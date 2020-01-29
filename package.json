@@ -3,6 +3,7 @@
   "version": "2.26.2",
   "description": "Utilities to write logs in auth0 components.",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "test": "./test.sh"
   },
