@@ -38,7 +38,7 @@ describe('schemas', () => {
                 res: {},
                 auth_req: {},
                 feature_id: '',
-                client: '',
+                client: {},
                 group: {},
                 role: {},
                 authenticator: {},
