@@ -14,12 +14,16 @@ module.exports.watch = function (logger, server, options) {
 
   function createLogEntry(request, log_type) {
     const took = Date.now() - request.info.received;
+    const res = request.response;
 
     return {
       log_type,
       took,
       req: request,
-      res: request.response
+      res: {
+        status_code: res.statusCode,
+        headers: res.headers,
+      },
     };
   }
 
