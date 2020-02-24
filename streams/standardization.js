@@ -45,6 +45,9 @@ class SchemaDebugStream extends Writable {
 
 /**
  * LogShaperStream will only pull valid fields from the log message.
+ * "Valid" is defined from the provided 'schema.properties' object.
+ * Each key in the 'schema.properties' will be used to `pick` the
+ * fields from the streamed log object.
  */
 class LogShaperStream extends stream.Transform {
     constructor(options) {
@@ -70,7 +73,45 @@ class LogShaperStream extends stream.Transform {
     }
 }
 
+class LogSchemaMetricsStream extends stream.Transform {
+    constructor(options) {
+        options = options || {};
+        super(options);
+
+        this.metrics = options.metrics;
+        this.schema = options.schema || LOG_SCHEMAS.webservice;
+        this.v = new Validator();
+        this.sampling_rate_percentage = options.sampling_rate_percentage || 0.01;
+    }
+
+    _transform(chunk, encoding, cb) {
+        // sample requests based on sampling rate
+        if (Math.random() > this.sampling_rate_percentage) {
+            this.push(chunk);
+            cb();
+            return;
+        }
+
+        const entry = chunk.toString();
+        let log;
+        try {
+            log = JSON.parse(entry);
+        } catch(error) {
+            return cb(new Error('unable to parse log to json'));
+        }
+
+        const result = this.v.validate(log, this.schema);
+        this.metrics.increment('logs.validation.count', {
+            is_valid: result.valid
+        });
+
+        this.push(JSON.stringify(log));
+        cb();
+    }
+}
+
 module.exports = {
     SchemaDebugStream,
-    LogShaperStream
+    LogShaperStream,
+    LogSchemaMetricsStream,
 };
