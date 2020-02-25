@@ -28,6 +28,15 @@ const startServer = async function(eventLoggerOptions) {
   });
   server.route({
     method: 'GET',
+    path: '/log_on_response',
+    handler: function(req) {
+      req.logOnResponse('obj.value', 'test');
+
+      return 'Hello world!';
+    }
+  });
+  server.route({
+    method: 'GET',
     path: '/ignored',
     handler: function() {
       return 'ignored!';
@@ -106,6 +115,20 @@ describe('watch Hapi server v17', function () {
         assert.isAbove(log_event.took, 0);
       };
       request.get(server.info.uri + '/', function (error, response, body) {
+        assert.equal(body, 'Hello world!');
+        done();
+      });
+    });
+
+    it('should log items on response time', function (done) {
+      eventLogger.logger.info = function(log_event) {
+        if (log_event.log_type === 'request') {
+          return;
+        }
+
+        assert.equal(log_event.obj.value, 'test');
+      };
+      request.get(server.info.uri + '/log_on_response', function (error, response, body) {
         assert.equal(body, 'Hello world!');
         done();
       });

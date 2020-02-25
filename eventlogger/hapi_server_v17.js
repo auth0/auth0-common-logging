@@ -1,5 +1,7 @@
-var assign = require('lodash').assign;
-var obfuscator = require('../lib/obfuscator');
+const assign = require('lodash').assign;
+const obfuscator = require('../lib/obfuscator');
+const LOG_ON_RESPONSE_SYMBOL = Symbol();
+const buildLogItemCollector = require('./log_item_collector');
 
 module.exports.watch = function (logger, server, options) {
   options = assign({}, {
@@ -76,8 +78,13 @@ module.exports.watch = function (logger, server, options) {
     if (ignorePaths.indexOf(request.path) >= 0) {
       return;
     }
-    const reponseLogEntry = createLogEntry(request, 'response');
-    logger.info(reponseLogEntry, 'response');
+    const responseLogEntry = createLogEntry(request, 'response');
+
+    if (request[LOG_ON_RESPONSE_SYMBOL]) {
+      request[LOG_ON_RESPONSE_SYMBOL].injectOn(responseLogEntry);
+    }
+
+    logger.info(responseLogEntry, 'response');
   }
 
   function onStartup() {
@@ -90,6 +97,17 @@ module.exports.watch = function (logger, server, options) {
   function onLog(event, tags) {
     logger.info({ log_type: 'server_log', data: event, tags });
   }
+
+  server.decorate('request', 'logOnResponse', (request) => {
+    const responseItemCollector = buildLogItemCollector(logger);
+
+    request[LOG_ON_RESPONSE_SYMBOL] = responseItemCollector;
+
+    return function (key, value) {
+      // Logs the value under the corresponding key on response log
+      responseItemCollector.addValue(key, value);
+    };
+  }, { apply: true });
 
   server.ext({ type: 'onRequest', method: onRequest });
   server.events.on({ name: 'request', channels: 'internal' }, onRequestClosedOrAborted);
