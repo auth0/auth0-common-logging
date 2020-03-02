@@ -87,13 +87,17 @@ module.exports.watch = function  (logger, server, options) {
   }).on('log', function (event, tags) {
     logger.info({
       log_type: 'server_log',
-      data: event,
-      tags: tags
+      extras: {
+        data: event,
+        tags: tags
+      }
     });
   }).on('start', function () {
     logger.info({
       log_type: 'listening',
-      port: server.info.port
+      extras: {
+        port: server.info.port
+      }
     },'listening on ' + server.info.port);
   });
 };
